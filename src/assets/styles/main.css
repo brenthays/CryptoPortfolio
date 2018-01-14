@@ -9,11 +9,6 @@
 .toolbar a {
   margin-left: 15px;
 }
-#portfolio-form {
-  background: #eee;
-  padding: 15px;
-  border: 1px solid #ccc;
-}
 tr.no-results {
   background: #fff!important;
 }

@@ -7,6 +7,7 @@ import VueResource from 'vue-resource'
 import VueLocalStorage from 'vue-ls'
 import VueCurrencyFilter from 'vue-currency-filter'
 import Toastr from 'vue-toastr'
+import BootstrapVue from 'bootstrap-vue'
 
 import App from './App'
 
@@ -26,6 +27,10 @@ Vue.use(VueCurrencyFilter,
     symbolSpacing: false
   })
 Vue.use(Toastr)
+Vue.use(BootstrapVue)
+
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 /* eslint-disable no-new */
 new Vue({

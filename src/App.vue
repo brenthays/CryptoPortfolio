@@ -10,34 +10,38 @@
     <h1>Your Crypto Portfolio</h1>
     <hr/>
     <!-- do this in a modal -->
-    <form id="portfolio-form" v-on:submit.prevent="addCoinToPortfolio" v-show="showAddNewCoin == true">
-      <label>What Coin?</label>
-      <model-select :options="coins"
-        v-model="selectedCoin"
-        placeholder="Select a coin to add">
-      </model-select>
-
-      <label>How many you got?</label>
-      <input type="text" class="form-control" v-model="newCoin.holdings"/>
-      <button type="submit" class="btn btn-primary pull-right">
-        Add Coin
-      </button>
-      <button type="button" v-on:click="hideAddNewCoinForm" class="btn btn-default pull-right">
-        Close
-      </button>
-      <div class="clearfix"></div>
-    </form>
+    <b-modal
+      id="add-coin-modal"
+      title="Add a Coin"
+      @ok="handleOk"
+      @shown="clearNewCoin"
+      ref="modal">
+      <form @submit.stop.prevent="handleOk">
+        <div class="form-group">
+          <label>Select a Coin</label>
+          <model-select class="form-control"
+            :options="coins"
+            v-model="selectedCoin"
+            placeholder="Search for your coin">
+          </model-select>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="text" class="form-control" v-model="newCoin.holdings"/>
+        </div>
+      </form>
+    </b-modal>
 
     <div class="toolbar text-right">
       <a href="#" v-on:click="refreshData" title="Refresh Data">
         <i class="fa fa-refresh" v-bind:class="{'fa-spin': loading}"></i>
       </a>
-      <a href="#" v-on:click="showAddNewCoinForm" title="Add New Coin to Portfolio">
+      <a href="#" v-b-modal.add-coin-modal title="Add New Coin to Portfolio">
         <i class="fa fa-plus"></i>
       </a>
     </div>
     <table class="table table-bordered table-striped text-left">
-      <thead class="thead-inverse">
+      <thead class="thead-inverse" v-show="portfolioData.length > 0">
         <tr>
           <th width="95px">Rank</th>
           <th>Name</th>
@@ -47,10 +51,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-if="portfolioData.length == 0" class="no-results">
+        <tr v-show="portfolioData.length == 0" class="no-results">
           <td colspan="5" class="text-center">
             <h2>Start Tracking Your Crypto Portfolio</h2>
-            <button class="btn btn-primary" v-on:click="showAddNewCoinForm">
+            <button class="btn btn-primary" v-b-modal.add-coin-modal>
               Add Your First Coin
             </button>
           </td>
@@ -64,7 +68,7 @@
           </td>
           <td class="text-right">{{ coin.value_usd | currency }}</td>
         </tr>
-        <tr>
+        <tr v-show="portfolioData.length > 0">
           <td colspan="4" class="text-right"><strong>Total Value</strong></td>
           <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
         </tr>
@@ -88,10 +92,7 @@
 
   let config = {
     apiKey: 'AIzaSyDBk06u1SJ8WcRkH0WFh0FoECniW3vlurs',
-    // authDomain: 'vuefire-quickstart-demo.firebaseapp.com',
     databaseURL: 'https://cryptoportfolio-f24dc.firebaseio.com/'
-    // storageBucket: 'vuefire-quickstart-demo.appspot.com',
-    // messagingSenderId: '248222879987'
   }
 
   // Here we are initializing the Firebase connection.
@@ -149,8 +150,24 @@
       },
       // adds coin to portfolio
       addCoinToPortfolio: function () {
-        if (!this.selectedCoin) return
+        if (!this.selectedCoin) {
+          this.$toastr.e('Select a coin!')
+          return
+        }
+
+        if (this.newCoin.holdings === '') {
+          this.$toastr.e('Enter a quantity!')
+          return
+        }
+
+        var q = parseFloat(this.newCoin.holdings)
+        if (isNaN(q)) {
+          this.$toastr.e('Enter a real quantity!')
+          return
+        }
+
         this.newCoin.id = this.selectedCoin
+        this.newCoin.quantity = q
 
         let portfolio = this.$ls.get('portfolio') ? this.$ls.get('portfolio') : []
         let coinFound = false
@@ -166,17 +183,19 @@
         this.$ls.set('portfolio', portfolio)
 
         this.$toastr.s('Coin Added')
-
-        this.newCoin = {id: '', holdings: ''}
-        this.selectedCoin = null
+        this.$refs.modal.hide()
+        this.clearNewCoin()
 
         this.calculatePortfolioData()
       },
-      showAddNewCoinForm: function () {
-        this.showAddNewCoin = true
+      handleOk: function (evt) {
+        // Prevent modal from closing
+        evt.preventDefault()
+        this.addCoinToPortfolio()
       },
-      hideAddNewCoinForm: function () {
-        this.showAddNewCoin = false
+      clearNewCoin: function () {
+        this.newCoin = {id: '', holdings: ''}
+        this.selectedCoin = null
       },
       // calculates table data for portfolio-form
       calculatePortfolioData: function () {
@@ -233,4 +252,5 @@
 <style>
   @import './assets/styles/toastr.css';
   @import './assets/styles/main.css';
+
 </style>
