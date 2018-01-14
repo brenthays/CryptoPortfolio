@@ -27,7 +27,7 @@
         </div>
         <div class="form-group">
           <label>Quantity</label>
-          <input type="text" class="form-control" v-model="newCoin.holdings"/>
+          <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.holdings"/>
         </div>
       </form>
     </b-modal>
