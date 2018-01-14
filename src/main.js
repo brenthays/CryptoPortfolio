@@ -29,8 +29,8 @@ Vue.use(VueCurrencyFilter,
 Vue.use(Toastr)
 Vue.use(BootstrapVue)
 
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 /* eslint-disable no-new */
 new Vue({

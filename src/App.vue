@@ -6,9 +6,6 @@
 
 <template>
   <div id="app">
-
-    <h1>Simple Crypto Portfolio</h1>
-    <hr/>
     <!-- do this in a modal -->
     <b-modal
       id="add-coin-modal"
@@ -41,7 +38,7 @@
       </button>
     </div>
     <table class="table table-bordered table-striped text-left">
-      <thead class="thead-inverse" v-show="portfolioData.length > 0">
+      <thead class="thead-default" v-show="portfolioData.length > 0">
         <tr>
           <th>Name</th>
           <th class="text-right">Price</th>

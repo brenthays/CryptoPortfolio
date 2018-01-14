@@ -18,3 +18,6 @@ tr.no-results td{
 tr.no-results h2{
   margin-bottom: 30px;
 }
+.btn {
+  cursor: pointer;
+}
