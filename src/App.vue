@@ -7,7 +7,7 @@
 <template>
   <div id="app">
 
-    <h1>Your Crypto Portfolio</h1>
+    <h1>Simple Crypto Portfolio</h1>
     <hr/>
     <!-- do this in a modal -->
     <b-modal
@@ -32,7 +32,7 @@
       </form>
     </b-modal>
 
-    <div class="toolbar text-right">
+    <div class="toolbar text-right" v-show="portfolioData.length > 0">
       <button class="btn btn-secondary" title="Refresh Data" v-on:click="refreshData">
         <i class="fa fa-refresh" v-bind:class="{'fa-spin': loading}"></i> Refresh
       </button>
