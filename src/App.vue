@@ -33,17 +33,16 @@
     </b-modal>
 
     <div class="toolbar text-right">
-      <a href="#" v-on:click="refreshData" title="Refresh Data">
-        <i class="fa fa-refresh" v-bind:class="{'fa-spin': loading}"></i>
-      </a>
-      <a href="#" v-b-modal.add-coin-modal title="Add New Coin to Portfolio">
-        <i class="fa fa-plus"></i>
-      </a>
+      <button class="btn btn-secondary" title="Refresh Data" v-on:click="refreshData">
+        <i class="fa fa-refresh" v-bind:class="{'fa-spin': loading}"></i> Refresh
+      </button>
+      <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary">
+        <i class="fa fa-plus"></i> Add New Coin
+      </button>
     </div>
     <table class="table table-bordered table-striped text-left">
       <thead class="thead-inverse" v-show="portfolioData.length > 0">
         <tr>
-          <th width="95px">Rank</th>
           <th>Name</th>
           <th class="text-right">Price</th>
           <th class="text-right">Quantity</th>
@@ -52,7 +51,7 @@
       </thead>
       <tbody>
         <tr v-show="portfolioData.length == 0" class="no-results">
-          <td colspan="5" class="text-center">
+          <td colspan="4" class="text-center">
             <h2>Start Tracking Your Crypto Portfolio</h2>
             <button class="btn btn-primary" v-b-modal.add-coin-modal>
               Add Your First Coin
@@ -60,7 +59,6 @@
           </td>
         </tr>
         <tr v-for="coin in portfolioData">
-          <td>{{ coin.rank }}</td>
           <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
           <td class="text-right">{{ coin.price_usd | currency }}</td>
           <td class="text-right">
@@ -69,7 +67,7 @@
           <td class="text-right">{{ coin.value_usd | currency }}</td>
         </tr>
         <tr v-show="portfolioData.length > 0">
-          <td colspan="4" class="text-right"><strong>Total Value</strong></td>
+          <td colspan="3" class="text-right"><strong>Total Value</strong></td>
           <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
         </tr>
       </tbody>
@@ -133,6 +131,9 @@
     },
 
     methods: {
+      loadingComplete: function () {
+        this.loading = false
+      },
       // refresh data pulls coin market data and pushes it to our db
       refreshData: function (resource) {
         this.loading = true
@@ -144,7 +145,7 @@
               json[i].value = json[i].id
             }
             coinsRef.set(json).then(response => {
-              this.loading = false
+              setTimeout(this.loadingComplete, 500)
             })
           })
       },
