@@ -1,0 +1,25 @@
+#app {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.toolbar {
+  font-size: 1.2em;
+  padding: 15px;
+}
+.toolbar a {
+  margin-left: 15px;
+}
+#portfolio-form {
+  background: #eee;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+tr.no-results {
+  background: #fff!important;
+}
+tr.no-results td{
+  padding: 30px;
+}
+tr.no-results h2{
+  margin-bottom: 30px;
+}
