@@ -41,7 +41,6 @@
     <b-modal
       id="update-coin-modal"
       title="Update Coin"
-      @ok="handleOk"
       ref="modal2">
       <form @submit.stop.prevent="saveCoin(updateCoin)">
         <div class="form-group">
@@ -107,39 +106,22 @@
 </template>
 
 <script>
-  import Hello from './components/Hello'
   import { ModelSelect } from 'vue-search-select'
-
-  // This line is new!
   import Firebase from 'firebase'
 
   /*
-   * The config was copied and pasted straight from the Firebase Dashboard.
-   * Simply click "Add Firebase to Your Web App" to access yours.
+   * Firebase config
    */
-
   let config = {
     apiKey: 'AIzaSyDBk06u1SJ8WcRkH0WFh0FoECniW3vlurs',
     databaseURL: 'https://cryptoportfolio-f24dc.firebaseio.com/'
   }
-
-  // Here we are initializing the Firebase connection.
   let app = Firebase.initializeApp(config)
   let db = app.database()
-
-  // Accessing the greetings reference; .ref() takes a URL as its parameter.
   let coinsRef = db.ref('coins')
 
   export default {
     name: 'app',
-
-    /*
-     * This section is added to the original CLI-generated App component. This
-     * is where VueFire comes into play, allowing us to link our Vue app to
-     * Firebase data relatively simply. More information is on the GitHub page:
-     *
-     * https://github.com/vuejs/vuefire/
-     */
 
     firebase: {
       coins: coinsRef
@@ -159,8 +141,7 @@
         portfolioData: [],
         totalPortfolioWorthUSD: 0,
         totalPortfolioWorthBTC: 0,
-        loading: false,
-        showAddNewCoin: false
+        loading: false
       }
     },
 
@@ -168,7 +149,6 @@
       loadingComplete: function () {
         this.loading = false
       },
-      // refresh data pulls coin market data and pushes it to our db
       refreshData: function (resource) {
         this.loading = true
         this.$http.get('https://api.coinmarketcap.com/v1/ticker/')
@@ -183,24 +163,21 @@
             })
           })
       },
-      // adds coin to portfolio
       addCoinToPortfolio: function () {
+        // validate
         if (!this.selectedCoin) {
           this.$toastr.e('Select a coin!')
           return
         }
-
         if (this.newCoin.holdings === '') {
           this.$toastr.e('Enter a quantity!')
           return
         }
-
         var q = parseFloat(this.newCoin.holdings)
         if (isNaN(q)) {
           this.$toastr.e('Enter a real quantity!')
           return
         }
-
         this.newCoin.id = this.selectedCoin
         this.newCoin.quantity = q
 
@@ -222,19 +199,9 @@
         this.closeModal()
         this.calculatePortfolioData()
       },
-      handleOk: function (evt) {
-        // Prevent modal from closing
-        evt.preventDefault()
-        this.addCoinToPortfolio()
-      },
       clearNewCoin: function () {
         this.newCoin = {id: '', holdings: ''}
         this.selectedCoin = null
-      },
-      closeModal: function () {
-        this.clearNewCoin()
-        this.$refs.modal.hide()
-        this.$refs.modal2.hide()
       },
       setUpdateCoin: function (coin) {
         this.updateCoin = {
@@ -257,7 +224,7 @@
             break
           }
         }
-        if (idx) {
+        if (idx !== null) {
           portfolio.splice(idx, 1)
           this.$ls.set('portfolio', portfolio)
           this.$toastr.s('Coin Removed')
@@ -265,7 +232,6 @@
           this.closeModal()
         }
       },
-      // calculates table data for portfolio-form
       calculatePortfolioData: function () {
         let portfolio = this.$ls.get('portfolio') ? this.$ls.get('portfolio') : []
         let portfolioData = []
@@ -295,16 +261,19 @@
               break
             }
           }
-
-          this.portfolioData = portfolioData
-          this.totalPortfolioWorthUSD = totalUSD
-          this.totalPortfolioWorthBTC = totalBTC
         }
+        this.portfolioData = portfolioData
+        this.totalPortfolioWorthUSD = totalUSD
+        this.totalPortfolioWorthBTC = totalBTC
+      },
+      closeModal: function () {
+        this.clearNewCoin()
+        this.$refs.modal.hide()
+        this.$refs.modal2.hide()
       }
     },
 
     components: {
-      Hello,
       ModelSelect
     },
 
