@@ -21,3 +21,6 @@ tr.no-results h2{
 .btn {
   cursor: pointer;
 }
+.modal-footer .btn.float-right{
+  margin-left: 5px;
+}

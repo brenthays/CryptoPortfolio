@@ -6,27 +6,60 @@
 
 <template>
   <div id="app">
-    <!-- do this in a modal -->
+    <!-- add a coin modal -->
     <b-modal
       id="add-coin-modal"
       title="Add a Coin"
-      @ok="handleOk"
       @shown="clearNewCoin"
       ref="modal">
-      <form @submit.stop.prevent="handleOk">
+      <form @submit.stop.prevent="addCoinToPortfolio">
         <div class="form-group">
           <label>Select a Coin</label>
           <model-select class="form-control"
             :options="coins"
             v-model="selectedCoin"
-            placeholder="Search for your coin">
+            placeholder="Search for the coin to add">
           </model-select>
         </div>
         <div class="form-group">
           <label>Quantity</label>
           <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.holdings"/>
         </div>
+        <button type="submit" name="button" style="display: none;"></button>
       </form>
+      <div slot="modal-footer" class="w-100">
+        <b-btn class="float-right" variant="primary" v-on:click="addCoinToPortfolio">
+          Save
+        </b-btn>
+        <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
+          Cancel
+        </b-btn>
+       </div>
+    </b-modal>
+
+    <!-- update a coin modal -->
+    <b-modal
+      id="update-coin-modal"
+      title="Update Coin"
+      @ok="handleOk"
+      ref="modal2">
+      <form @submit.stop.prevent="saveCoin(updateCoin)">
+        <div class="form-group">
+          <label>{{ updateCoin.name }} Quantity</label>
+          <input type="number" step="0.0000000001" class="form-control" v-model="updateCoin.holdings"/>
+        </div>
+      </form>
+      <div slot="modal-footer" class="w-100">
+        <b-btn class="float-right" variant="primary" v-on:click="saveCoin(updateCoin)">
+          Save
+        </b-btn>
+        <b-btn class="float-right" variant="danger" v-on:click="removeCoin(updateCoin)">
+          Remove Coin
+        </b-btn>
+        <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
+          Cancel
+        </b-btn>
+       </div>
     </b-modal>
 
     <div class="toolbar text-right" v-show="portfolioData.length > 0">
@@ -37,7 +70,7 @@
         <i class="fa fa-plus"></i> Add New Coin
       </button>
     </div>
-    <table class="table table-bordered table-striped text-left">
+    <table class="table table-bordered table-striped table-hover text-left">
       <thead class="thead-default" v-show="portfolioData.length > 0">
         <tr>
           <th>Name</th>
@@ -55,7 +88,7 @@
             </button>
           </td>
         </tr>
-        <tr v-for="coin in portfolioData">
+        <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
           <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
           <td class="text-right">{{ coin.price_usd | currency }}</td>
           <td class="text-right">
@@ -118,6 +151,10 @@
           id: '',
           holdings: ''
         },
+        updateCoin: {
+          id: '',
+          holdings: ''
+        },
         selectedCoin: null,
         portfolioData: [],
         totalPortfolioWorthUSD: 0,
@@ -167,6 +204,7 @@
         this.newCoin.id = this.selectedCoin
         this.newCoin.quantity = q
 
+        // if the coin already exists, update it's value
         let portfolio = this.$ls.get('portfolio') ? this.$ls.get('portfolio') : []
         let coinFound = false
         for (var i = 0; i < portfolio.length; i++) {
@@ -180,10 +218,8 @@
         if (!coinFound) portfolio.push(this.newCoin)
         this.$ls.set('portfolio', portfolio)
 
-        this.$toastr.s('Coin Added')
-        this.$refs.modal.hide()
-        this.clearNewCoin()
-
+        this.$toastr.s('Coin Saved')
+        this.closeModal()
         this.calculatePortfolioData()
       },
       handleOk: function (evt) {
@@ -194,6 +230,40 @@
       clearNewCoin: function () {
         this.newCoin = {id: '', holdings: ''}
         this.selectedCoin = null
+      },
+      closeModal: function () {
+        this.clearNewCoin()
+        this.$refs.modal.hide()
+        this.$refs.modal2.hide()
+      },
+      setUpdateCoin: function (coin) {
+        this.updateCoin = {
+          id: coin.id,
+          name: coin.name,
+          holdings: coin.holdings
+        }
+      },
+      saveCoin: function (coin) {
+        this.newCoin = coin
+        this.selectedCoin = coin.id
+        this.addCoinToPortfolio()
+      },
+      removeCoin: function (coin) {
+        let portfolio = this.$ls.get('portfolio') ? this.$ls.get('portfolio') : []
+        let idx = null
+        for (var i = 0; i < portfolio.length; i++) {
+          if (portfolio[i].id === coin.id) {
+            idx = i
+            break
+          }
+        }
+        if (idx) {
+          portfolio.splice(idx, 1)
+          this.$ls.set('portfolio', portfolio)
+          this.$toastr.s('Coin Removed')
+          this.calculatePortfolioData()
+          this.closeModal()
+        }
       },
       // calculates table data for portfolio-form
       calculatePortfolioData: function () {
@@ -239,7 +309,6 @@
     },
 
     mounted () {
-      console.log('inside sdfasdfasdf')
       this.refreshData()
       coinsRef.on('value', resp => {
         this.calculatePortfolioData()
