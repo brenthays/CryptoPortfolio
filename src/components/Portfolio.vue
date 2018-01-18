@@ -113,7 +113,7 @@
     name: 'Portfolio',
 
     firebase: {
-      coins: this.$coinsRef
+      coins: coinsRef
     },
 
     data () {
@@ -147,7 +147,7 @@
               json[i].text = json[i].name
               json[i].value = json[i].id
             }
-            this.$coinsRef.set(json).then(response => {
+            coinsRef.set(json).then(response => {
               setTimeout(this.loadingComplete, 500)
             })
           })

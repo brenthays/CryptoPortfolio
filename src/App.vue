@@ -11,6 +11,24 @@
 </template>
 
 <script>
+  import firebase from 'firebase'
+
+  // let app
+  let config = {
+    apiKey: 'AIzaSyDBk06u1SJ8WcRkH0WFh0FoECniW3vlurs',
+    databaseURL: 'https://cryptoportfolio-f24dc.firebaseio.com',
+    authDomain: 'cryptoportfolio-f24dc.firebaseapp.com',
+    messagingSenderId: '122171976357'
+  }
+  firebase.initializeApp(config)
+  firebase.auth().onAuthStateChanged((user) => {
+    console.log('authstatechanged', user)
+    if (user) {
+      console.log('loggedin', user)
+      // this.authUser = user
+    }
+  })
+
   export default {
     name: 'app'
   }
