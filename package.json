@@ -15,7 +15,8 @@
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",
     "bootstrap-vue": "^1.4.0",
-    "firebase": "^3.6.4",
+    "firebase": "^4.1.1",
+    "firebaseui": "^2.5.1",
     "vue": "^2.1.0",
     "vue-currency-filter": "^2.1.0",
     "vue-ls": "^2.3.3",

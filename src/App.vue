@@ -1,13 +1,18 @@
 <!-- App.vue
   This component is the root component for our Vue application. It is rendered
-  in the project root's index.html file with the <div id="app"> tag. The Firebase
+  in the project root's index.html file with the <div id="app"> tag. The firebase
   instance exists only within this component.
 -->
 
 <template>
   <div id="app">
     <!-- add a coin modal -->
-    <b-modal
+    <div class="auth-box text-center" v-if="authUser === null">
+      <h2>Start Tracking Your Crypto Portfolio</h2>
+      <div id="firebaseui-auth-container"></div>
+    </div>
+    <div v-if="authUser !== null">
+      <b-modal
       id="add-coin-modal"
       title="Add a Coin"
       @shown="clearNewCoin"
@@ -16,107 +21,111 @@
         <div class="form-group">
           <label>Select a Coin</label>
           <model-select class="form-control"
-            :options="coins"
-            v-model="selectedCoin"
-            placeholder="Search for the coin to add">
-          </model-select>
-        </div>
-        <div class="form-group">
-          <label>Quantity</label>
-          <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.holdings"/>
-        </div>
-        <button type="submit" name="button" style="display: none;"></button>
-      </form>
-      <div slot="modal-footer" class="w-100">
-        <b-btn class="float-right" variant="primary" v-on:click="addCoinToPortfolio">
-          Save
-        </b-btn>
-        <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
-          Cancel
-        </b-btn>
-       </div>
-    </b-modal>
-
-    <!-- update a coin modal -->
-    <b-modal
-      id="update-coin-modal"
-      title="Update Coin"
-      ref="modal2">
-      <form @submit.stop.prevent="saveCoin(updateCoin)">
-        <div class="form-group">
-          <label>{{ updateCoin.name }} Quantity</label>
-          <input type="number" step="0.0000000001" class="form-control" v-model="updateCoin.holdings"/>
-        </div>
-      </form>
-      <div slot="modal-footer" class="w-100">
-        <b-btn class="float-right" variant="primary" v-on:click="saveCoin(updateCoin)">
-          Save
-        </b-btn>
-        <b-btn class="float-right" variant="danger" v-on:click="removeCoin(updateCoin)">
-          Remove Coin
-        </b-btn>
-        <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
-          Cancel
-        </b-btn>
-       </div>
-    </b-modal>
-
-    <div class="toolbar text-right" v-show="portfolioData.length > 0">
-      <button class="btn btn-secondary" title="Refresh Data" v-on:click="refreshData">
-        <i class="fa fa-refresh" v-bind:class="{'fa-spin': loading}"></i> Refresh
-      </button>
-      <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary">
-        <i class="fa fa-plus"></i> Add New Coin
-      </button>
+          :options="coins"
+          v-model="selectedCoin"
+          placeholder="Search for the coin to add">
+        </model-select>
+      </div>
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.holdings"/>
+      </div>
+      <button type="submit" name="button" style="display: none;"></button>
+    </form>
+    <div slot="modal-footer" class="w-100">
+      <b-btn class="float-right" variant="primary" v-on:click="addCoinToPortfolio">
+        Save
+      </b-btn>
+      <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
+        Cancel
+      </b-btn>
     </div>
-    <table class="table table-bordered table-striped table-hover text-left">
-      <thead class="thead-default" v-show="portfolioData.length > 0">
-        <tr>
-          <th>Name</th>
-          <th class="text-right">Price</th>
-          <th class="text-right">Quantity</th>
-          <th class="text-right">Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-show="portfolioData.length == 0" class="no-results">
-          <td colspan="4" class="text-center">
-            <h2>Start Tracking Your Crypto Portfolio</h2>
-            <button class="btn btn-primary" v-b-modal.add-coin-modal>
-              Add Your First Coin
-            </button>
-          </td>
-        </tr>
-        <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
-          <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
-          <td class="text-right">{{ coin.price_usd | currency }}</td>
-          <td class="text-right">
-            {{ coin.holdings }}
-          </td>
-          <td class="text-right">{{ coin.value_usd | currency }}</td>
-        </tr>
-        <tr v-show="portfolioData.length > 0">
-          <td colspan="3" class="text-right"><strong>Total Value</strong></td>
-          <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
-        </tr>
-      </tbody>
-    </table>
+  </b-modal>
+
+  <!-- update a coin modal -->
+  <b-modal
+  id="update-coin-modal"
+  title="Update Coin"
+  ref="modal2">
+  <form @submit.stop.prevent="saveCoin(updateCoin)">
+    <div class="form-group">
+      <label>{{ updateCoin.name }} Quantity</label>
+      <input type="number" step="0.0000000001" class="form-control" v-model="updateCoin.holdings"/>
+    </div>
+  </form>
+  <div slot="modal-footer" class="w-100">
+    <b-btn class="float-right" variant="primary" v-on:click="saveCoin(updateCoin)">
+      Save
+    </b-btn>
+    <b-btn class="float-right" variant="danger" v-on:click="removeCoin(updateCoin)">
+      Remove Coin
+    </b-btn>
+    <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
+      Cancel
+    </b-btn>
+  </div>
+</b-modal>
+
+<div class="toolbar text-right" v-show="portfolioData.length > 0">
+  <button class="btn btn-secondary" title="Refresh Data" v-on:click="refreshData">
+    <i class="fa fa-refresh" v-bind:class="{'fa-spin': loading}"></i> Refresh
+  </button>
+  <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary">
+    <i class="fa fa-plus"></i> Add New Coin
+  </button>
+</div>
+<table class="table table-bordered table-striped table-hover text-left">
+  <thead class="thead-default" v-show="portfolioData.length > 0">
+    <tr>
+      <th>Name</th>
+      <th class="text-right">Price</th>
+      <th class="text-right">Quantity</th>
+      <th class="text-right">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-show="portfolioData.length == 0" class="no-results">
+      <td colspan="4" class="text-center">
+        <h2>Start Tracking Your Crypto Portfolio</h2>
+        <button class="btn btn-primary" v-b-modal.add-coin-modal>
+          Add Your First Coin
+        </button>
+      </td>
+    </tr>
+    <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
+      <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
+      <td class="text-right">{{ coin.price_usd | currency }}</td>
+      <td class="text-right">
+        {{ coin.holdings }}
+      </td>
+      <td class="text-right">{{ coin.value_usd | currency }}</td>
+    </tr>
+    <tr v-show="portfolioData.length > 0">
+      <td colspan="3" class="text-right"><strong>Total Value</strong></td>
+      <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
+    </tr>
+  </tbody>
+</table>
+    </div>
 
   </div>
 </template>
 
 <script>
   import { ModelSelect } from 'vue-search-select'
-  import Firebase from 'firebase'
+  import firebase from 'firebase'
+  import firebaseui from 'firebaseui'
 
   /*
-   * Firebase config
+   * firebase config
    */
   let config = {
     apiKey: 'AIzaSyDBk06u1SJ8WcRkH0WFh0FoECniW3vlurs',
-    databaseURL: 'https://cryptoportfolio-f24dc.firebaseio.com/'
+    databaseURL: 'https://cryptoportfolio-f24dc.firebaseio.com',
+    authDomain: 'cryptoportfolio-f24dc.firebaseapp.com',
+    messagingSenderId: '122171976357'
   }
-  let app = Firebase.initializeApp(config)
+  let app = firebase.initializeApp(config)
   let db = app.database()
   let coinsRef = db.ref('coins')
 
@@ -129,6 +138,7 @@
 
     data () {
       return {
+        authUser: null,
         newCoin: {
           id: '',
           holdings: ''
@@ -151,7 +161,7 @@
       },
       refreshData: function (resource) {
         this.loading = true
-        this.$http.get('https://api.coinmarketcap.com/v1/ticker/')
+        this.$http.get('https://api.coinmarketcap.com/v1/ticker/?limit=0')
           .then(response => response.json())
           .then(json => {
             for (var i = 0; i < json.length; i++) {
@@ -270,6 +280,9 @@
         this.clearNewCoin()
         this.$refs.modal.hide()
         this.$refs.modal2.hide()
+      },
+      logout: function () {
+        firebase.auth().signOut()
       }
     },
 
@@ -278,9 +291,39 @@
     },
 
     mounted () {
+      var uiConfig = {
+        signInFlow: 'popup',
+        signInOptions: [
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID
+        ],
+        tosUrl: '/',
+        callbacks: {
+          signInSuccess: function (currentUser, credential, redirectUrl) {
+            console.log('signInSuccess')
+            return false
+          },
+          uiShown: function () {
+            console.log('uiShown')
+          }
+        }
+      }
+      var ui = new firebaseui.auth.AuthUI(firebase.auth())
+      ui.start('#firebaseui-auth-container', uiConfig)
+
       this.refreshData()
       coinsRef.on('value', resp => {
         this.calculatePortfolioData()
+      })
+    },
+
+    created () {
+      firebase.auth().onAuthStateChanged((user) => {
+        console.log('authstatechanged', user)
+        if (user) {
+          console.log('loggedin', user)
+          this.authUser = user
+        }
       })
     }
   }
