@@ -1,7 +1,11 @@
 <template>
-  <div class="auth-box text-center">
-    <h2>Start Tracking Your Crypto Portfolio</h2>
-    <div id="firebaseui-auth-container"></div>
+  <div class="row main-row">
+    <div class="col-12">
+      <div class="auth-box text-center">
+        <h2>Start Tracking Your Crypto Portfolio</h2>
+        <div id="firebaseui-auth-container"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -37,17 +41,13 @@
       }
       var ui = new firebaseui.auth.AuthUI(firebase.auth())
       ui.start('#firebaseui-auth-container', uiConfig)
+    },
+
+    created () {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) window.location = '/portfolio'
+      })
     }
-    //
-    // created () {
-    //   // firebase.auth().onAuthStateChanged((user) => {
-    //   //   console.log('authstatechanged', user)
-    //   //   if (user) {
-    //   //     console.log('loggedin', user)
-    //   //     this.authUser = user
-    //   //   }
-    //   // })
-    // }
   }
 
 </script>

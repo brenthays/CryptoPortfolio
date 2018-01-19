@@ -6,12 +6,16 @@
 
 <template>
   <div id="app">
-    <router-view></router-view>
+    <top-nav></top-nav>
+    <div class="container">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
   import firebase from 'firebase'
+  import TopNav from './components/TopNav'
 
   // let app
   let config = {
@@ -21,16 +25,13 @@
     messagingSenderId: '122171976357'
   }
   firebase.initializeApp(config)
-  firebase.auth().onAuthStateChanged((user) => {
-    console.log('authstatechanged', user)
-    if (user) {
-      console.log('loggedin', user)
-      // this.authUser = user
-    }
-  })
 
   export default {
-    name: 'app'
+    name: 'app',
+
+    components: {
+      TopNav
+    }
   }
 </script>
 <style>
