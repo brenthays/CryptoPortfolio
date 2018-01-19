@@ -102,8 +102,6 @@
 <script>
   import { ModelSelect } from 'vue-search-select'
   import firebase from 'firebase'
-  // import firebaseui from 'firebaseui'
-  // import router from 'vue-router'
 
   /*
    * firebase config
