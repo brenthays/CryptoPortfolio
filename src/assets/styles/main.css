@@ -29,3 +29,9 @@ div.auth-box h2{
 .modal-footer .btn.float-right{
   margin-left: 5px;
 }
+.loader {
+  text-align: center;
+  padding: 30px;
+  font-size: 3em;
+  color: #bdc3c7; 
+}

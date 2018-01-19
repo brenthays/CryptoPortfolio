@@ -1,7 +1,10 @@
 <template>
   <div class="row main-row">
     <div class="col-12">
-      <div class="auth-box text-center">
+      <div class="loader" v-show="loading">
+        <i class="fa fa-refresh fa-spin"></i>
+      </div>
+      <div class="auth-box text-center" v-show="!loading">
         <h2>Start Tracking Your Crypto Portfolio</h2>
         <div id="firebaseui-auth-container"></div>
       </div>
@@ -16,8 +19,10 @@
   export default {
     name: 'Login',
 
-    firebase: {
-
+    data () {
+      return {
+        loading: true
+      }
     },
 
     mounted () {
@@ -45,7 +50,11 @@
 
     created () {
       firebase.auth().onAuthStateChanged((user) => {
-        if (user) window.location = '/portfolio'
+        if (user) {
+          window.location = '/portfolio'
+        } else {
+          this.loading = false
+        }
       })
     }
   }
