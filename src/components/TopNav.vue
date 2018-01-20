@@ -6,8 +6,14 @@
     <a class="navbar-brand" href="/">Simple Crypto Portfolio</a>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#" v-on:click="signOut" v-if="authUser !== null">Sign Out</a>
+        <li class="nav-item" v-if="authUser !== null">
+          <a class="nav-link" title="Sign Out" href="#" v-on:click="signOut">Sign Out</a>
+        </li>
+        <li class="nav-item" v-if="authUser === null">
+          <a class="nav-link" title="Sign Up" href="/login">Sign Up</a>
+        </li>
+        <li class="nav-item" v-if="authUser === null">
+          <a class="nav-link" title="Login" href="/login">Login</a>
         </li>
       </ul>
     </div>

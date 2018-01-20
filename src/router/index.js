@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // components
+import Home from '../components/Home'
 import Portfolio from '../components/Portfolio'
 import Login from '../components/Login'
 // import firebase from 'firebase'
@@ -14,6 +15,11 @@ let router = new Router({
   routes: [
     {
       path: '/',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/login',
       name: 'Login',
       component: Login,
       meta: {
