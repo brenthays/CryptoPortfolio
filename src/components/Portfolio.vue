@@ -21,7 +21,7 @@
           </div>
           <div class="form-group">
             <label>Quantity</label>
-            <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.holdings"/>
+            <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.quantity"/>
           </div>
           <button type="submit" name="button" style="display: none;"></button>
         </form>
@@ -43,7 +43,7 @@
         <form @submit.stop.prevent="saveCoin(updateCoin)">
           <div class="form-group">
             <label>{{ updateCoin.name }} Quantity</label>
-            <input type="number" step="0.0000000001" class="form-control" v-model="updateCoin.holdings"/>
+            <input type="number" step="0.0000000001" class="form-control" v-model="updateCoin.quantity"/>
           </div>
         </form>
         <div slot="modal-footer" class="w-100">
@@ -89,7 +89,7 @@
             <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
             <td class="text-right">{{ coin.price_usd | currency }}</td>
             <td class="text-right">
-              {{ coin.holdings }}
+              {{ coin.quantity }}
             </td>
             <td class="text-right">{{ coin.value_usd | currency }}</td>
           </tr>
@@ -111,7 +111,7 @@
 
   let db = firebase.database()
   let coinsRef = db.ref('coins')
-  let portfolioRef
+  let portfolioRef = db.ref('portfolios')
 
   export default {
     name: 'Portfolio',
@@ -124,13 +124,15 @@
       return {
         newCoin: {
           id: '',
-          holdings: ''
+          quantity: ''
         },
         updateCoin: {
           id: '',
-          holdings: ''
+          quantity: ''
         },
         authUser: null,
+        portfolioReceived: false,
+        coinDataReceived: false,
         selectedCoin: null,
         portfolioData: [],
         totalPortfolioWorthUSD: 0,
@@ -165,11 +167,11 @@
           this.$toastr.e('Select a coin!')
           return
         }
-        if (this.newCoin.holdings === '') {
+        if (this.newCoin.quantity === '') {
           this.$toastr.e('Enter a quantity!')
           return
         }
-        var q = parseFloat(this.newCoin.holdings)
+        var q = parseFloat(this.newCoin.quantity)
         if (isNaN(q)) {
           this.$toastr.e('Enter a real quantity!')
           return
@@ -187,72 +189,64 @@
         })
       },
       clearNewCoin: function () {
-        this.newCoin = {id: '', holdings: ''}
+        this.newCoin = {id: '', quantity: ''}
         this.selectedCoin = null
       },
       setUpdateCoin: function (coin) {
         this.updateCoin = {
           id: coin.id,
           name: coin.name,
-          holdings: coin.holdings
+          quantity: coin.quantity,
+          key: coin.key
         }
       },
       saveCoin: function (coin) {
-        this.newCoin = coin
-        this.selectedCoin = coin.id
-        this.addCoinToPortfolio()
+        portfolioRef.child(coin.key).update(coin)
+        this.$toastr.s('Coin Saved')
+        this.closeModal()
       },
       removeCoin: function (coin) {
-        let portfolio = this.$ls.get('portfolio') ? this.$ls.get('portfolio') : []
-        let idx = null
-        for (var i = 0; i < portfolio.length; i++) {
-          if (portfolio[i].id === coin.id) {
-            idx = i
-            break
-          }
-        }
-        if (idx !== null) {
-          portfolio.splice(idx, 1)
-          this.$ls.set('portfolio', portfolio)
-          this.$toastr.s('Coin Removed')
-          this.calculatePortfolioData()
-          this.closeModal()
-        }
+        portfolioRef.child(coin.key).remove()
+        this.$toastr.s('Coin Removed')
+        this.closeModal()
       },
       calculatePortfolioData: function () {
-        let portfolio = this.$ls.get('portfolio') ? this.$ls.get('portfolio') : []
+        let portfolio = this.portfolio
+        let coins = this.coins
         let portfolioData = []
         let totalUSD = 0
         let totalBTC = 0
 
-        for (var i = 0; i < portfolio.length; i++) {
-          let thisCoin = portfolio[i]
-          for (var j = 0; j < this.coins.length; j++) {
-            if (thisCoin.id === this.coins[j].id) {
-              let thisCoinData = this.coins[j]
+        portfolio.forEach(function (thisCoin) {
+          coins.forEach(function (thisCoinData) {
+            if (thisCoin.id === thisCoinData.id) {
               let thisPortfolioData = {
+                key: thisCoin['.key'],
                 id: thisCoinData.id,
                 name: thisCoinData.name,
                 price_usd: thisCoinData.price_usd,
                 price_btc: thisCoinData.price_btc,
                 symbol: thisCoinData.symbol,
                 rank: thisCoinData.rank,
-                holdings: thisCoin.holdings,
-                value_usd: thisCoin.holdings * thisCoinData.price_usd,
-                value_btc: thisCoin.holdings * thisCoinData.price_btc
+                quantity: thisCoin.quantity,
+                value_usd: thisCoin.quantity * thisCoinData.price_usd,
+                value_btc: thisCoin.quantity * thisCoinData.price_btc
               }
 
-              totalUSD += thisCoin.holdings * thisCoinData.price_usd
-              totalBTC += thisCoin.holdings * thisCoinData.price_btc
+              totalUSD += thisCoin.quantity * thisCoinData.price_usd
+              totalBTC += thisCoin.quantity * thisCoinData.price_btc
               portfolioData.push(thisPortfolioData)
-              break
             }
-          }
-        }
+          })
+        })
+
         this.portfolioData = portfolioData
         this.totalPortfolioWorthUSD = totalUSD
         this.totalPortfolioWorthBTC = totalBTC
-        this.loading = false
+
+        if (this.coinDataReceived && this.portfolioReceived) {
+          this.loading = false
+        }
       },
       closeModal: function () {
         this.clearNewCoin()
@@ -273,9 +267,15 @@
       firebase.auth().onAuthStateChanged((user) => {
         this.authUser = user
         if (user) {
-          portfolioRef = db.ref('portfolios').child(this.authUser.uid)
           this.refreshData()
+          portfolioRef = db.ref('portfolios').child(this.authUser.uid)
+          this.$bindAsArray('portfolio', portfolioRef)
           coinsRef.on('value', resp => {
+            this.coinDataReceived = true
+            this.calculatePortfolioData()
+          })
+          portfolioRef.on('value', resp => {
+            this.portfolioReceived = true
             this.calculatePortfolioData()
           })
         } else {
