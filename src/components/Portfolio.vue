@@ -109,12 +109,9 @@
   import { ModelSelect } from 'vue-search-select'
   import firebase from 'firebase'
 
-  /*
-   * firebase config
-   */
-
   let db = firebase.database()
   let coinsRef = db.ref('coins')
+  let portfolioRef
 
   export default {
     name: 'Portfolio',
@@ -133,6 +130,7 @@
           id: '',
           holdings: ''
         },
+        authUser: null,
         selectedCoin: null,
         portfolioData: [],
         totalPortfolioWorthUSD: 0,
@@ -179,23 +177,14 @@
         this.newCoin.id = this.selectedCoin
         this.newCoin.quantity = q
 
-        // if the coin already exists, update it's value
-        let portfolio = this.$ls.get('portfolio') ? this.$ls.get('portfolio') : []
-        let coinFound = false
-        for (var i = 0; i < portfolio.length; i++) {
-          if (portfolio[i].id === this.newCoin.id) {
-            portfolio[i] = this.newCoin
-            coinFound = true
-            break
-          }
-        }
-
-        if (!coinFound) portfolio.push(this.newCoin)
-        this.$ls.set('portfolio', portfolio)
-
-        this.$toastr.s('Coin Saved')
-        this.closeModal()
-        this.calculatePortfolioData()
+        // push to firebase
+        var app = this
+        portfolioRef.once('value', function (snapshot) {
+          portfolioRef.push(app.newCoin).then(resp => {
+            app.$toastr.s('Coin Saved')
+            app.closeModal()
+          })
+        })
       },
       clearNewCoin: function () {
         this.newCoin = {id: '', holdings: ''}
@@ -282,7 +271,9 @@
 
     created () {
       firebase.auth().onAuthStateChanged((user) => {
+        this.authUser = user
         if (user) {
+          portfolioRef = db.ref('portfolios').child(this.authUser.uid)
           this.refreshData()
           coinsRef.on('value', resp => {
             this.calculatePortfolioData()
