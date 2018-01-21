@@ -1,11 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// components
 import Home from '../components/Home'
 import Portfolio from '../components/Portfolio'
 import Login from '../components/Login'
-// import firebase from 'firebase'
 
 Vue.use(Router)
 
@@ -36,12 +34,5 @@ let router = new Router({
     }
   ]
 })
-
-// firebase.auth().onAuthStateChanged((user) => {
-//   let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-//   let authPage = to.matched.some(record => record.meta.authPage)
-//   if (requiresAuth && !user) router.push('/')
-//   if (authPage && user) router.push('portfolio')
-// })
 
 export default router

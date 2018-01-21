@@ -67,38 +67,40 @@
           <i class="fa fa-plus"></i> Add New Coin
         </button>
       </div>
-      <table class="table table-bordered table-striped table-hover text-left">
-        <thead class="thead-default" v-show="portfolioData.length > 0">
-          <tr>
-            <th>Name</th>
-            <th class="text-right">Price</th>
-            <th class="text-right">Quantity</th>
-            <th class="text-right">Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-show="portfolioData.length == 0" class="no-results">
-            <td colspan="4" class="text-center">
-              <h2>Start Tracking Your Crypto Portfolio</h2>
-              <button class="btn btn-primary" v-b-modal.add-coin-modal>
-                Add Your First Coin
-              </button>
-            </td>
-          </tr>
-          <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
-            <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
-            <td class="text-right">{{ coin.price_usd | currency }}</td>
-            <td class="text-right">
-              {{ coin.quantity }}
-            </td>
-            <td class="text-right">{{ coin.value_usd | currency }}</td>
-          </tr>
-          <tr v-show="portfolioData.length > 0">
-            <td colspan="3" class="text-right"><strong>Total Value</strong></td>
-            <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover text-left">
+          <thead class="thead-default" v-show="portfolioData.length > 0">
+            <tr>
+              <th>Name</th>
+              <th class="text-right">Price</th>
+              <th class="text-right">Quantity</th>
+              <th class="text-right">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-show="portfolioData.length == 0" class="no-results">
+              <td colspan="4" class="text-center">
+                <h2>Start Tracking Your Crypto Portfolio</h2>
+                <button class="btn btn-primary" v-b-modal.add-coin-modal>
+                  Add Your First Coin
+                </button>
+              </td>
+            </tr>
+            <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
+              <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
+              <td class="text-right">{{ coin.price_usd | currency }}</td>
+              <td class="text-right">
+                {{ coin.quantity }}
+              </td>
+              <td class="text-right">{{ coin.value_usd | currency }}</td>
+            </tr>
+            <tr v-show="portfolioData.length > 0">
+              <td colspan="3" class="text-right"><strong>Total Value</strong></td>
+              <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       </div>
 
     </div>

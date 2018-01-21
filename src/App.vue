@@ -1,9 +1,3 @@
-<!-- App.vue
-  This component is the root component for our Vue application. It is rendered
-  in the project root's index.html file with the <div id="app"> tag. The firebase
-  instance exists only within this component.
--->
-
 <template>
   <div id="app">
     <top-nav></top-nav>
