@@ -2,9 +2,14 @@
   <div class="row main-row">
     <div class="col-12">
       <div class="auth-box text-center">
-        <h2>Start Tracking Your Crypto Portfolio</h2>
-        <a href="/login" title="Login" v-show="!loading && !authUser" class="btn btn-primary">Login or Register For Free</a>
-        <a href="/portfolio" title="Go To Your Portfolio" v-show="!loading && authUser" class="btn btn-primary">Go To Your Portfolio</a>
+        <div v-if="!loading && !authUser">
+          <h2>Start Tracking Your Crypto Portfolio</h2>
+          <a href="/login" title="Login" class="btn btn-primary">Login or Register For Free</a>
+        </div>
+        <div v-if="!loading && authUser">
+          <h2>Welcome Back, {{ authUser.displayName }}</h2>
+          <a href="/portfolio" title="Go To Your Portfolio" v-show="!loading && authUser" class="btn btn-primary">Go To Your Portfolio</a>
+        </div>
       </div>
     </div>
   </div>
