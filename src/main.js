@@ -10,6 +10,8 @@ import VueCurrencyFilter from 'vue-currency-filter'
 import Toastr from 'vue-toastr'
 import BootstrapVue from 'bootstrap-vue'
 import router from './router'
+import lodash from 'lodash'
+import VueLodash from 'vue-lodash'
 
 Vue.use(VueFire)
 Vue.use(VueResource)
@@ -28,6 +30,7 @@ Vue.use(VueCurrencyFilter,
   })
 Vue.use(Toastr)
 Vue.use(BootstrapVue)
+Vue.use(VueLodash, lodash)
 
 /* eslint-disable no-new */
 new Vue({

@@ -14,93 +14,102 @@
             <div class="form-group">
               <label>Select a Coin</label>
               <model-select class="form-control"
-              :options="coins"
-              v-model="selectedCoin"
-              placeholder="Search for the coin to add">
-            </model-select>
+                :options="coins"
+                v-model="selectedCoin"
+                placeholder="Search for the coin to add">
+              </model-select>
+            </div>
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.quantity"/>
+            </div>
+            <button type="submit" name="button" style="display: none;"></button>
+          </form>
+          <div slot="modal-footer" class="w-100">
+            <b-btn class="float-right" variant="primary" v-on:click="addCoinToPortfolio">
+              Save
+            </b-btn>
+            <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
+              Cancel
+            </b-btn>
           </div>
-          <div class="form-group">
-            <label>Quantity</label>
-            <input type="number" step="0.0000000001" class="form-control" v-model="newCoin.quantity"/>
-          </div>
-          <button type="submit" name="button" style="display: none;"></button>
-        </form>
-        <div slot="modal-footer" class="w-100">
-          <b-btn class="float-right" variant="primary" v-on:click="addCoinToPortfolio">
-            Save
-          </b-btn>
-          <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
-            Cancel
-          </b-btn>
-        </div>
-      </b-modal>
+        </b-modal>
 
-      <!-- update a coin modal -->
-      <b-modal
-      id="update-coin-modal"
-      title="Update Coin"
-      ref="modal2">
-        <form @submit.stop.prevent="saveCoin(updateCoin)">
-          <div class="form-group">
-            <label>{{ updateCoin.name }} Quantity</label>
-            <input type="number" step="0.0000000001" class="form-control" v-model="updateCoin.quantity"/>
+        <!-- update a coin modal -->
+        <b-modal
+        id="update-coin-modal"
+        title="Update Coin"
+        ref="modal2">
+          <form @submit.stop.prevent="saveCoin(updateCoin)">
+            <div class="form-group">
+              <label>{{ updateCoin.name }} Quantity</label>
+              <input type="number" step="0.0000000001" class="form-control" v-model="updateCoin.quantity"/>
+            </div>
+          </form>
+          <div slot="modal-footer" class="w-100">
+            <b-btn class="float-right" variant="primary" v-on:click="saveCoin(updateCoin)">
+              Save
+            </b-btn>
+            <b-btn class="float-right" variant="danger" v-on:click="removeCoin(updateCoin)">
+              Remove Coin
+            </b-btn>
+            <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
+              Cancel
+            </b-btn>
           </div>
-        </form>
-        <div slot="modal-footer" class="w-100">
-          <b-btn class="float-right" variant="primary" v-on:click="saveCoin(updateCoin)">
-            Save
-          </b-btn>
-          <b-btn class="float-right" variant="danger" v-on:click="removeCoin(updateCoin)">
-            Remove Coin
-          </b-btn>
-          <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
-            Cancel
-          </b-btn>
-        </div>
-      </b-modal>
+        </b-modal>
 
-      <div class="toolbar text-right" v-show="portfolioData.length > 0">
-        <button class="btn btn-secondary" title="Refresh Data" v-on:click="refreshData">
-          <i class="fa fa-refresh" v-bind:class="{'fa-spin': tableRefresh}"></i> Refresh
-        </button>
-        <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary">
-          <i class="fa fa-plus"></i> Add New Coin
-        </button>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover text-left">
-          <thead class="thead-default" v-show="portfolioData.length > 0">
-            <tr>
-              <th>Name</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-show="portfolioData.length == 0" class="no-results">
-              <td colspan="4" class="text-center">
-                <h2>Start Tracking Your Crypto Portfolio</h2>
-                <button class="btn btn-primary" v-b-modal.add-coin-modal>
-                  Add Your First Coin
-                </button>
-              </td>
-            </tr>
-            <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
-              <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
-              <td class="text-right">{{ coin.price_usd | currency }}</td>
-              <td class="text-right">
-                {{ coin.quantity }}
-              </td>
-              <td class="text-right">{{ coin.value_usd | currency }}</td>
-            </tr>
-            <tr v-show="portfolioData.length > 0">
-              <td colspan="3" class="text-right"><strong>Total Value</strong></td>
-              <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <div class="toolbar" v-show="portfolioData.length > 0">
+          <div class="input-group sort-select pull-left">
+            <div class="input-group-addon">
+              <i class="fa fa-sort"></i>
+            </div>
+            <select class="form-control" v-model="sortSelected" v-on:change="sortPortfolioData">
+              <option v-for="option in sortOptions" v-bind:value="option">{{ option.text }}</option>
+            </select>
+          </div>
+          <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary pull-right">
+            <i class="fa fa-plus"></i> Add New Coin
+          </button>
+          <button class="btn btn-secondary pull-right" title="Refresh Data" v-on:click="refreshData">
+            <i class="fa fa-refresh" v-bind:class="{'fa-spin': tableRefresh}"></i> Refresh
+          </button>
+          <div class="clearfix"></div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-hover text-left">
+            <thead class="thead-default" v-show="portfolioData.length > 0">
+              <tr>
+                <th>Name</th>
+                <th class="text-right">Price</th>
+                <th class="text-right">Quantity</th>
+                <th class="text-right">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-show="portfolioData.length == 0" class="no-results">
+                <td colspan="4" class="text-center">
+                  <h2>Start Tracking Your Crypto Portfolio</h2>
+                  <button class="btn btn-primary" v-b-modal.add-coin-modal>
+                    Add Your First Coin
+                  </button>
+                </td>
+              </tr>
+              <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
+                <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
+                <td class="text-right">{{ coin.price_usd | currency }}</td>
+                <td class="text-right">
+                  {{ coin.quantity }}
+                </td>
+                <td class="text-right">{{ coin.value_usd | currency }}</td>
+              </tr>
+              <tr v-show="portfolioData.length > 0">
+                <td colspan="3" class="text-right"><strong>Total Value</strong></td>
+                <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
@@ -114,6 +123,24 @@
   let db = firebase.database()
   let coinsRef = db.ref('coins')
   let portfolioRef = db.ref('portfolios')
+
+  let sortOptions = [{
+    text: 'Coin Rank',
+    attr: 'rank',
+    dir: 'asc'
+  }, {
+    text: 'Coin Value',
+    attr: 'price_usd',
+    dir: 'desc'
+  }, {
+    text: 'Portfolio Quantity',
+    attr: 'quantity',
+    dir: 'desc'
+  }, {
+    text: 'Portfolio Value',
+    attr: 'value_usd',
+    dir: 'desc'
+  }]
 
   export default {
     name: 'Portfolio',
@@ -140,7 +167,9 @@
         totalPortfolioWorthUSD: 0,
         totalPortfolioWorthBTC: 0,
         loading: true,
-        tableRefresh: false
+        tableRefresh: false,
+        sortOptions: sortOptions,
+        sortSelected: sortOptions[0]
       }
     },
 
@@ -226,11 +255,11 @@
                 key: thisCoin['.key'],
                 id: thisCoinData.id,
                 name: thisCoinData.name,
-                price_usd: thisCoinData.price_usd,
-                price_btc: thisCoinData.price_btc,
+                price_usd: parseFloat(thisCoinData.price_usd),
+                price_btc: parseFloat(thisCoinData.price_btc),
                 symbol: thisCoinData.symbol,
-                rank: thisCoinData.rank,
-                quantity: thisCoin.quantity,
+                rank: parseInt(thisCoinData.rank),
+                quantity: parseFloat(thisCoin.quantity),
                 value_usd: thisCoin.quantity * thisCoinData.price_usd,
                 value_btc: thisCoin.quantity * thisCoinData.price_btc
               }
@@ -245,6 +274,7 @@
         this.portfolioData = portfolioData
         this.totalPortfolioWorthUSD = totalUSD
         this.totalPortfolioWorthBTC = totalBTC
+        this.sortPortfolioData()
 
         if (this.coinDataReceived && this.portfolioReceived) {
           this.loading = false
@@ -254,6 +284,16 @@
         this.clearNewCoin()
         this.$refs.modal.hide()
         this.$refs.modal2.hide()
+      },
+      sortPortfolioData: function () {
+        let app = this
+        this.portfolioData.sort(function (a, b) {
+          if (app.sortSelected.dir === 'desc') {
+            return a[app.sortSelected.attr] < b[app.sortSelected.attr]
+          } else {
+            return a[app.sortSelected.attr] > b[app.sortSelected.attr]
+          }
+        })
       }
     },
 

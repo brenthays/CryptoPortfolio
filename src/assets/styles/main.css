@@ -6,8 +6,14 @@
   font-size: 1.2em;
   padding: 15px 0;
 }
-.toolbar a {
-  margin-left: 15px;
+.toolbar .btn {
+  margin-left: 5px;
+}
+.toolbar .sort-select {
+  width: 200px;
+}
+.toolbar .sort-select select {
+  cursor: pointer;
 }
 div.auth-box {
   padding: 30px;
@@ -33,5 +39,5 @@ div.auth-box h2{
   text-align: center;
   padding: 30px;
   font-size: 3em;
-  color: #bdc3c7; 
+  color: #bdc3c7;
 }
