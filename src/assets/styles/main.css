@@ -4,7 +4,8 @@
 }
 .toolbar {
   font-size: 1.2em;
-  padding: 15px 0;
+  /* padding: 15px 0; */
+  margin-bottom: 30px;
 }
 .toolbar a {
   margin-left: 15px;
@@ -33,5 +34,34 @@ div.auth-box h2{
   text-align: center;
   padding: 30px;
   font-size: 3em;
-  color: #bdc3c7; 
+  color: #bdc3c7;
+}
+.hidden {
+  display: none;
+}
+.portfolio-cards {
+
+}
+.portfolio-cards .card{
+  margin-bottom: 30px;
+}
+.portfolio-cards .card .card-meta{
+  margin-top: 15px;
+}
+.portfolio-cards .card .card-meta .card-meta-header{
+  margin-bottom:0;
+}
+.portfolio-cards .card h5{
+  /* color: #95a5a6; */
+  font-size: 1rem;
+}
+h2.small-h2{
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+.uppercase{
+  text-transform: uppercase;
+}
+.font-weight-normal {
+  font-weight: 500;
 }

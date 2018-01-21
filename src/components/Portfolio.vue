@@ -59,6 +59,12 @@
         </div>
       </b-modal>
 
+      <div class="jumbotron text-center" v-show="totalPortfolioWorthUSD">
+        <h2 class="small-h2 text-muted">Total Portfolio Value</h2>
+        <h3>{{ totalPortfolioWorthUSD | currency }}</h3>
+        <h3>{{ totalPortfolioWorthBTC }} BTC</h3>
+      </div>
+
       <div class="toolbar text-right" v-show="portfolioData.length > 0">
         <button class="btn btn-secondary" title="Refresh Data" v-on:click="refreshData">
           <i class="fa fa-refresh" v-bind:class="{'fa-spin': tableRefresh}"></i> Refresh
@@ -67,7 +73,42 @@
           <i class="fa fa-plus"></i> Add New Coin
         </button>
       </div>
-      <div class="table-responsive">
+      <div class="portfolio-cards">
+        <div class="row">
+          <div class="col-md-6" v-for="coin in portfolioData">
+            <div class="card" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
+              <div class="card-block">
+                <h3 class="card-title">{{coin.symbol}} - {{ coin.name }}</h3>
+                <p class="card-text">
+                  Coin Value: {{ coin.price_usd | currency }}
+                  <br/>
+                  Quantity: {{ coin.quantity }}
+                </p>
+                <!-- <div class="row">
+                  <div class="col-4">
+                    <h5 class="text-right text-muted uppercase">Coin Value</h5>
+                    <h4 class="text-right">{{ coin.price_usd | currency }}</h4>
+                  </div>
+                  <div class="col-4">
+                    <h5 class="text-right text-muted uppercase">Quantity</h5>
+                    <h4 class="text-right">{{ coin.quantity }}</h4>
+                  </div>
+                  <div class="col-4">
+                    <h5 class="text-right text-muted uppercase">Portfolio Value</h5>
+                    <h4 class="text-right">{{ coin.value_usd | currency }}</h4>
+                  </div>
+                </div> -->
+                <h5 class="text-right text-muted uppercase">Portfolio Value</h5>
+                <h4 class="text-right">{{ coin.value_usd | currency }}</h4>
+              </div>
+              <!-- <div class="card-footer text-muted text-right">
+                <a href="#" v-on:click="setUpdateCoin(coin)" class="btn btn-outline-primary btn-sm" v-b-modal.update-coin-modal>Edit</a>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive hidden">
         <table class="table table-bordered table-striped table-hover text-left">
           <thead class="thead-default" v-show="portfolioData.length > 0">
             <tr>
