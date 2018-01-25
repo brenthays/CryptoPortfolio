@@ -4,12 +4,14 @@
     <div class="container">
       <router-view></router-view>
     </div>
+    <site-footer></site-footer>
   </div>
 </template>
 
 <script>
   import firebase from 'firebase'
   import TopNav from './components/TopNav'
+  import SiteFooter from './components/SiteFooter'
 
   // let app
   let config = {
@@ -24,7 +26,8 @@
     name: 'app',
 
     components: {
-      TopNav
+      TopNav,
+      SiteFooter
     }
   }
 </script>

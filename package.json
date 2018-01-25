@@ -19,6 +19,7 @@
     "firebaseui": "^2.5.1",
     "lodash": "^4.17.4",
     "vue": "^2.1.0",
+    "vue-adsense": "^1.0.1",
     "vue-currency-filter": "^2.1.0",
     "vue-lodash": "^1.0.4",
     "vue-ls": "^2.3.3",

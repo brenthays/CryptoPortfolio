@@ -108,10 +108,6 @@
                 </td>
                 <td class="text-right">{{ coin.value_usd | currency }}</td>
               </tr>
-              <!-- <tr v-show="portfolioData.length > 0">
-                <td colspan="3" class="text-right"><strong>Total Value</strong></td>
-                <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
-              </tr> -->
             </tbody>
           </table>
         </div>
