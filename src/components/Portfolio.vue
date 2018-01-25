@@ -59,6 +59,11 @@
           </div>
         </b-modal>
 
+        <div class="jumbotron text-center" v-if="totalPortfolioWorthUSD">
+          <h3>Total Portfolio Value</h3>
+          <h2>{{ totalPortfolioWorthUSD | currency }}</h2>
+        </div>
+
         <div class="toolbar" v-show="portfolioData.length > 0">
           <div class="input-group sort-select pull-left">
             <div class="input-group-addon">
@@ -103,10 +108,10 @@
                 </td>
                 <td class="text-right">{{ coin.value_usd | currency }}</td>
               </tr>
-              <tr v-show="portfolioData.length > 0">
+              <!-- <tr v-show="portfolioData.length > 0">
                 <td colspan="3" class="text-right"><strong>Total Value</strong></td>
                 <td class="text-right"><strong>{{ totalPortfolioWorthUSD | currency }}</strong></td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
