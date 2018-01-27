@@ -65,7 +65,7 @@
         </div>
 
         <div class="toolbar" v-show="portfolioData.length > 0">
-          <div class="input-group sort-select pull-left">
+          <div class="input-group sort-select pull-left" v-show="portfolioData.length > 1">
             <div class="input-group-addon">
               <i class="fa fa-sort"></i>
             </div>
@@ -76,7 +76,7 @@
           <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary pull-right">
             <i class="fa fa-plus"></i> Add New Coin
           </button>
-          <button class="btn btn-secondary pull-right" title="Refresh Data" v-on:click="refreshData">
+          <button class="btn btn-secondary pull-right" v-show="showRefresh === true" title="Refresh Data" v-on:click="refreshData">
             <i class="fa fa-refresh" v-bind:class="{'fa-spin': tableRefresh}"></i> Refresh
           </button>
           <div class="clearfix"></div>
@@ -123,14 +123,19 @@
 
   let db = firebase.database()
   let coinsRef = db.ref('coins')
+  let coinsUpdatedRef = db.ref('coinsUpdated')
   let portfolioRef = db.ref('portfolios')
 
   let sortOptions = [{
+    text: 'Coin Name',
+    attr: 'name',
+    dir: 'asc'
+  }, {
     text: 'Coin Rank',
     attr: 'rank',
     dir: 'asc'
   }, {
-    text: 'Coin Value',
+    text: 'Coin Price',
     attr: 'price_usd',
     dir: 'desc'
   }, {
@@ -147,7 +152,8 @@
     name: 'Portfolio',
 
     firebase: {
-      coins: coinsRef
+      coins: coinsRef,
+      coinsUpdated: coinsUpdatedRef
     },
 
     data () {
@@ -170,11 +176,26 @@
         loading: true,
         tableRefresh: false,
         sortOptions: sortOptions,
-        sortSelected: sortOptions[0]
+        sortSelected: sortOptions[0],
+        showRefresh: false
       }
     },
 
     methods: {
+      /**
+       * Periodically checks that coin data is up to date
+       * If not, refresh button shows to user
+       */
+      watchCoinsUpdated: function () {
+        let app = this
+        setInterval(function () {
+          coinsUpdatedRef.once('value', resp => {
+            let seconds = new Date() / 1000
+            let lastUpdated = resp.val()
+            app.showRefresh = (seconds - lastUpdated > 120)
+          })
+        }, 30000)
+      },
       tableRefreshComplete: function () {
         this.tableRefresh = false
         this.loading = false
@@ -321,6 +342,7 @@
             this.portfolioReceived = true
             this.calculatePortfolioData()
           })
+          this.watchCoinsUpdated()
         } else {
           window.location = '/'
         }

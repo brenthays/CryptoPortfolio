@@ -18,7 +18,7 @@
 }
 div.auth-box {
   padding: 30px;
-  /* border: 1px solid #ccc; */
+  border: 1px solid #ccc;
 }
 tr.no-results {
   background: #fff!important;
@@ -50,10 +50,14 @@ div.auth-box h2{
   font-size: 1.25rem;
   text-transform: uppercase;
 }
+.landing {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
 .highlight{
   text-align: center;
   margin-top: 60px;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 .highlight img{
   height: 75px;
@@ -63,4 +67,7 @@ div.auth-box h2{
   font-size: 1.25rem;
   max-width: 200px;
   margin: auto;
+}
+.highlight .item {
+  margin-bottom: 30px;
 }

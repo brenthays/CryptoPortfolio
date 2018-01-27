@@ -5,7 +5,7 @@
         <i class="fa fa-refresh fa-spin"></i>
       </div>
       <div class="auth-box text-center" v-show="!loading">
-        <h2>Login</h2>
+        <h2>Login or Sign Up for Free</h2>
         <div id="firebaseui-auth-container"></div>
       </div>
     </div>
