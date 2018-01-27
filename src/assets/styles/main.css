@@ -18,7 +18,7 @@
 }
 div.auth-box {
   padding: 30px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
 }
 tr.no-results {
   background: #fff!important;
@@ -49,4 +49,18 @@ div.auth-box h2{
   color: #999;
   font-size: 1.25rem;
   text-transform: uppercase;
+}
+.highlight{
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 60px;
+}
+.highlight img{
+  height: 75px;
+  margin-bottom: 15px;
+}
+.highlight h3{
+  font-size: 1.25rem;
+  max-width: 200px;
+  margin: auto;
 }

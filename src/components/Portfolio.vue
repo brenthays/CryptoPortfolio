@@ -310,7 +310,7 @@
       firebase.auth().onAuthStateChanged((user) => {
         this.authUser = user
         if (user) {
-          this.refreshData()
+          // this.refreshData()
           portfolioRef = db.ref('portfolios').child(this.authUser.uid)
           this.$bindAsArray('portfolio', portfolioRef)
           coinsRef.on('value', resp => {
