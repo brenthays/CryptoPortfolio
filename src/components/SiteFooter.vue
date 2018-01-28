@@ -4,9 +4,9 @@
     id="donate-modal"
     title="Donate"
     ref="modalDonate">
-      <p>Bitcoin Address: 1LNpgPX36WGpBQGnStQyfXLstdHVPvyd2K</p>
-      <p>Ethereum: 0x0cf9541156Be3029224BC058e77D24F4B52349fE</p>
-      <p>Litecoin: Li2HWmbxzBE8EhfLALsbSnKVaejYvDyzdY</p>
+      <p><strong>Bitcoin:</strong> 1LNpgPX36WGpBQGnStQyfXLstdHVPvyd2K</p>
+      <p><strong>Ethereum:</strong> 0x0cf9541156Be3029224BC058e77D24F4B52349fE</p>
+      <p><strong>Litecoin:</strong> Li2HWmbxzBE8EhfLALsbSnKVaejYvDyzdY</p>
       <div slot="modal-footer" class="w-100">
         <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
           Close
