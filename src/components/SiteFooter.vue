@@ -1,6 +1,27 @@
 <template>
   <div class="footer">
     <b-modal
+    id="contact-modal"
+    title="Contact Us"
+    ref="modalContact">
+      <p>Have questions or feedback? Submit the form below.</p>
+      <hr/>
+      <form @submit.stop.prevent="submitFeedback" class="contact-form">
+        <label for="contactContact">Your Contact Info</label>
+        <input type="text" v-model="contact.contact" id="contactContact" class="form-control" placeholder="Name/Email"/>
+        <label for="contactMessage">Message</label>
+        <textarea v-model="contact.message" id="contactMessage" class="form-control"></textarea>
+      </form>
+      <div slot="modal-footer" class="w-100">
+        <b-btn class="float-right" variant="primary" v-on:click="submitFeedback">
+          Submit
+        </b-btn>
+        <b-btn class="float-right" variant="secondary" v-on:click="closeModal">
+          Close
+        </b-btn>
+      </div>
+    </b-modal>
+    <b-modal
     id="donate-modal"
     title="Donate"
     ref="modalDonate">
@@ -30,6 +51,8 @@
         </div>
         <div class="col-12">
           <a href="#" v-b-modal.donate-modal>Donate</a>
+          &nbsp;|&nbsp;
+          <a href="#" v-b-modal.contact-modal>Contact Us</a>
         </div>
       </div>
     </div>
@@ -44,16 +67,35 @@
 
     data () {
       return {
-        authUser: null
+        authUser: null,
+        contact: {
+          message: '',
+          contact: ''
+        }
       }
     },
 
     methods: {
+      submitFeedback: function () {
+        if (!this.contact.message.length) {
+          this.$toastr.e('Add a message')
+          return
+        }
+
+        let feedbackRef = firebase.database().ref('feedback')
+
+        let app = this
+        feedbackRef.push(this.contact).then(resp => {
+          app.$toastr.s('Thank your contacting us!')
+          this.closeModal()
+        })
+      },
       signOut: function () {
         firebase.auth().signOut()
       },
       closeModal: function () {
         this.$refs.modalDonate.hide()
+        this.$refs.modalContact.hide()
       }
     },
 

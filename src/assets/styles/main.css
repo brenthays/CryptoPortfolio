@@ -93,6 +93,12 @@ div.auth-box h2{
 .footer {
 }
 .footer-row {
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.contact-form {
+
+}
+.contact-form .form-control {
+  margin-bottom: 15px;
 }

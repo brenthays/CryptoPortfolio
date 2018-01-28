@@ -75,7 +75,7 @@
           </div>
 
           <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary pull-right">
-            <i class="fa fa-plus"></i> Add New Coin
+            <i class="fa fa-plus"></i> Add Coin
           </button>
           <button class="btn btn-secondary pull-right" v-show="options.showRefresh" title="Refresh Data" v-on:click="refreshData">
             <i class="fa fa-refresh" v-bind:class="{'fa-spin': tableRefresh}"></i> Refresh
