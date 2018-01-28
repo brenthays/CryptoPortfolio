@@ -76,7 +76,7 @@
           <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary pull-right">
             <i class="fa fa-plus"></i> Add New Coin
           </button>
-          <button class="btn btn-secondary pull-right" v-show="showRefresh === true" title="Refresh Data" v-on:click="refreshData">
+          <button class="btn btn-secondary pull-right" v-show="options.showRefresh" title="Refresh Data" v-on:click="refreshData">
             <i class="fa fa-refresh" v-bind:class="{'fa-spin': tableRefresh}"></i> Refresh
           </button>
           <div class="clearfix"></div>
@@ -123,8 +123,8 @@
 
   let db = firebase.database()
   let coinsRef = db.ref('coins')
-  let coinsUpdatedRef = db.ref('coinsUpdated')
   let portfolioRef = db.ref('portfolios')
+  let optionsRef = db.ref('options')
 
   let sortOptions = [{
     text: 'Coin Name',
@@ -153,7 +153,10 @@
 
     firebase: {
       coins: coinsRef,
-      coinsUpdated: coinsUpdatedRef
+      options: {
+        source: optionsRef,
+        asObject: true
+      }
     },
 
     data () {
@@ -176,26 +179,11 @@
         loading: true,
         tableRefresh: false,
         sortOptions: sortOptions,
-        sortSelected: sortOptions[0],
-        showRefresh: false
+        sortSelected: sortOptions[0]
       }
     },
 
     methods: {
-      /**
-       * Periodically checks that coin data is up to date
-       * If not, refresh button shows to user
-       */
-      watchCoinsUpdated: function () {
-        let app = this
-        setInterval(function () {
-          coinsUpdatedRef.once('value', resp => {
-            let seconds = new Date() / 1000
-            let lastUpdated = resp.val()
-            app.showRefresh = (seconds - lastUpdated > 120)
-          })
-        }, 30000)
-      },
       tableRefreshComplete: function () {
         this.tableRefresh = false
         this.loading = false
@@ -331,7 +319,6 @@
       firebase.auth().onAuthStateChanged((user) => {
         this.authUser = user
         if (user) {
-          // this.refreshData()
           portfolioRef = db.ref('portfolios').child(this.authUser.uid)
           this.$bindAsArray('portfolio', portfolioRef)
           coinsRef.on('value', resp => {
@@ -342,7 +329,6 @@
             this.portfolioReceived = true
             this.calculatePortfolioData()
           })
-          this.watchCoinsUpdated()
         } else {
           window.location = '/'
         }
