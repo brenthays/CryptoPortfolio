@@ -65,14 +65,15 @@
         </div>
 
         <div class="toolbar" v-show="portfolioData.length > 0">
-          <div class="input-group sort-select pull-left" v-show="portfolioData.length > 1">
-            <div class="input-group-addon">
-              <i class="fa fa-sort"></i>
+          <div class="input-group better-input-group sort-select pull-left" v-show="portfolioData.length > 1">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fa fa-sort"></i></span>
             </div>
             <select class="form-control" v-model="sortSelected" v-on:change="sortPortfolioData">
               <option v-for="option in sortOptions" v-bind:value="option">{{ option.text }}</option>
             </select>
           </div>
+
           <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary pull-right">
             <i class="fa fa-plus"></i> Add New Coin
           </button>
@@ -82,7 +83,7 @@
           <div class="clearfix"></div>
         </div>
         <div class="table-responsive">
-          <table class="table table-bordered table-striped table-hover text-left">
+          <table class="table table-bordered table-hover text-left">
             <thead class="thead-default" v-show="portfolioData.length > 0">
               <tr>
                 <th>Name</th>
@@ -100,7 +101,7 @@
                   </button>
                 </td>
               </tr>
-              <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-b-modal.update-coin-modal>
+              <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" class="pointer" v-b-modal.update-coin-modal>
                 <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
                 <td class="text-right">{{ coin.price_usd | currency }}</td>
                 <td class="text-right">

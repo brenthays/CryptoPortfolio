@@ -1,7 +1,7 @@
 <template>
   <div class="footer">
     <div class="container">
-      <div class="row">
+      <div class="row footer-row">
         <div class="col-12 text-center">
           <!-- responsive -->
           <ins class="adsbygoogle"

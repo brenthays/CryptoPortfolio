@@ -1,4 +1,7 @@
+body, html {
+  font-family: 'Oxygen', sans-serif;
 
+}
 .main-row{
   padding-bottom: 30px;
   padding-top: 30px;
@@ -36,6 +39,19 @@ div.auth-box h2{
 .modal-footer .btn.float-right{
   margin-left: 5px;
 }
+.better-input-group {
+
+}
+.better-input-group .input-group-prepend {
+  border-right: none;
+}
+.better-input-group .input-group-text {
+  background: #fff;
+}
+.better-input-group .form-control {
+  border-left: none;
+  padding-left: 0;
+}
 .loader {
   text-align: center;
   padding: 30px;
@@ -70,4 +86,13 @@ div.auth-box h2{
 }
 .highlight .item {
   margin-bottom: 30px;
+}
+.pointer {
+  cursor: pointer;
+}
+.footer {
+}
+.footer-row {
+  padding-top: 30px;
+  padding-bottom: 30px;
 }

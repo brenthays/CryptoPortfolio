@@ -1,13 +1,17 @@
 <template>
-  <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Simple Crypto Portfolio</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="/">Simple Crypto Portfolio</a>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item" v-if="authUser !== null">
-          <a class="nav-link" title="Sign Out" href="#" v-on:click="signOut">Sign Out</a>
+        <li class="nav-item dropdown" v-if="authUser !== null">
+          <a href="#" class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ authUser.displayName }}</a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="#" v-on:click="signOut">Sign Out</a>
+          </div>
         </li>
         <li class="nav-item" v-if="authUser === null">
           <a class="nav-link" title="Sign Up" href="/login">Sign Up</a>
