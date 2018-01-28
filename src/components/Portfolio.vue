@@ -274,8 +274,8 @@
                 value_btc: thisCoin.quantity * thisCoinData.price_btc
               }
 
-              totalUSD += thisCoin.quantity * thisCoinData.price_usd
-              totalBTC += thisCoin.quantity * thisCoinData.price_btc
+              totalUSD += thisCoinData.price_usd ? thisCoin.quantity * thisCoinData.price_usd : 0
+              totalBTC += thisCoinData.price_btc ? thisCoin.quantity * thisCoinData.price_btc : 0
               portfolioData.push(thisPortfolioData)
             }
           })
