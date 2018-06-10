@@ -21,7 +21,7 @@ body, html {
 }
 div.auth-box {
   padding: 30px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
 }
 tr.no-results {
   background: #fff!important;
@@ -70,14 +70,18 @@ div.auth-box h2{
   padding-top: 30px;
   padding-bottom: 30px;
 }
+.highlight-box {
+  padding: 30px;
+  /* background: #eee; */
+}
 .highlight{
   text-align: center;
   margin-top: 60px;
   margin-bottom: 30px;
 }
 .highlight img{
-  height: 75px;
-  margin-bottom: 15px;
+  height: 60px;
+  margin-bottom: 30px;
 }
 .highlight h3{
   font-size: 1.25rem;
