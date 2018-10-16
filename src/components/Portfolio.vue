@@ -199,7 +199,7 @@
               json[i].value = json[i].id
             }
             coinsRef.set(json).then(response => {
-              setTimeout(this.tableRefreshComplete, 500)
+              this.tableRefreshComplete()
             })
           })
       },
