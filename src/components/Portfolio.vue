@@ -65,14 +65,14 @@
         </div>
 
         <div class="toolbar" v-show="portfolioData.length > 0">
-          <div class="input-group better-input-group sort-select pull-left" v-show="portfolioData.length > 1">
+          <!-- <div class="input-group better-input-group sort-select pull-left" v-show="portfolioData.length > 1">
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fa fa-sort"></i></span>
             </div>
             <select class="form-control" v-model="sortSelected" v-on:change="sortPortfolioData">
               <option v-for="option in sortOptions" v-bind:value="option">{{ option.text }}</option>
             </select>
-          </div>
+          </div> -->
 
           <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary pull-right">
             <i class="fa fa-plus"></i> Add Coin
@@ -86,15 +86,36 @@
           <table class="table table-bordered table-hover text-left">
             <thead class="thead-default" v-show="portfolioData.length > 0">
               <tr>
-                <th>Name</th>
-                <th class="text-right">Price</th>
-                <th class="text-right">Quantity</th>
-                <th class="text-right">Value</th>
+                <th class="pointer" width="150px" v-on:click="sortPortfolioDataBy('rank')">
+                  Market Rank
+                  <i class="fa fa-caret-up" v-if="sortByDir == 'asc' && sortByAttr == 'rank'"></i>
+                  <i class="fa fa-caret-down" v-if="sortByDir == 'desc' && sortByAttr == 'rank'"></i>
+                </th>
+                <th class="pointer" v-on:click="sortPortfolioDataBy('name')">
+                  Name
+                  <i class="fa fa-caret-up" v-if="sortByDir == 'asc' && sortByAttr == 'name'"></i>
+                  <i class="fa fa-caret-down" v-if="sortByDir == 'desc' && sortByAttr == 'name'"></i>
+                </th>
+                <th class="text-right pointer" v-on:click="sortPortfolioDataBy('price_usd')">
+                  Price
+                  <i class="fa fa-caret-up" v-if="sortByDir == 'asc' && sortByAttr == 'price_usd'"></i>
+                  <i class="fa fa-caret-down" v-if="sortByDir == 'desc' && sortByAttr == 'price_usd'"></i>
+                </th>
+                <th class="text-right pointer" v-on:click="sortPortfolioDataBy('quantity')">
+                  Quantity
+                  <i class="fa fa-caret-up" v-if="sortByDir == 'asc' && sortByAttr == 'quantity'"></i>
+                  <i class="fa fa-caret-down" v-if="sortByDir == 'desc' && sortByAttr == 'quantity'"></i>
+                </th>
+                <th class="text-right pointer" v-on:click="sortPortfolioDataBy('value_usd')">
+                  Value
+                  <i class="fa fa-caret-up" v-if="sortByDir == 'asc' && sortByAttr == 'value_usd'"></i>
+                  <i class="fa fa-caret-down" v-if="sortByDir == 'desc' && sortByAttr == 'value_usd'"></i>
+                </th>
               </tr>
             </thead>
             <tbody>
               <tr v-show="portfolioData.length == 0" class="no-results">
-                <td colspan="4" class="text-center">
+                <td colspan="5" class="text-center">
                   <h2>Start Tracking Your Crypto Portfolio</h2>
                   <button class="btn btn-primary" v-b-modal.add-coin-modal>
                     Add Your First Coin
@@ -102,6 +123,7 @@
                 </td>
               </tr>
               <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" class="pointer" v-b-modal.update-coin-modal>
+                <td>{{ coin.rank }}</td>
                 <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
                 <td class="text-right">{{ coin.price_usd | currency }}</td>
                 <td class="text-right">
@@ -180,7 +202,9 @@
         loading: true,
         tableRefresh: false,
         sortOptions: sortOptions,
-        sortSelected: sortOptions[0]
+        sortSelected: sortOptions[0],
+        sortByAttr: 'name',
+        sortByDir: 'asc'
       }
     },
 
@@ -285,7 +309,7 @@
         this.portfolioData = portfolioData
         this.totalPortfolioWorthUSD = totalUSD
         this.totalPortfolioWorthBTC = totalBTC
-        this.sortPortfolioData()
+        this.sortPortfolioDataBy('name')
 
         if (this.coinDataReceived && this.portfolioReceived) {
           this.loading = false
@@ -303,6 +327,24 @@
             return a[app.sortSelected.attr] < b[app.sortSelected.attr]
           } else {
             return a[app.sortSelected.attr] > b[app.sortSelected.attr]
+          }
+        })
+      },
+      sortPortfolioDataBy: function (attr) {
+        let app = this
+
+        if (app.sortByAttr === attr && app.sortByDir === 'asc') {
+          app.sortByDir = 'desc'
+        } else {
+          app.sortByDir = 'asc'
+        }
+        app.sortByAttr = attr
+
+        this.portfolioData.sort(function (a, b) {
+          if (app.sortByDir === 'desc') {
+            return a[app.sortByAttr] < b[app.sortByAttr]
+          } else {
+            return a[app.sortByAttr] > b[app.sortByAttr]
           }
         })
       }
