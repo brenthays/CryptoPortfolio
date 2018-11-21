@@ -73,7 +73,12 @@
               <option v-for="option in sortOptions" v-bind:value="option">{{ option.text }}</option>
             </select>
           </div> -->
-
+          <div class="input-group better-input-group sort-select pull-left" v-show="portfolioData.length > 1">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fa fa-search"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Search Coins" v-model="searchString" v-on:input="searchCoins"/>
+          </div>
           <button v-b-modal.add-coin-modal title="Add New Coin to Portfolio" class="btn btn-primary pull-right">
             <i class="fa fa-plus"></i> Add Coin
           </button>
@@ -122,7 +127,12 @@
                   </button>
                 </td>
               </tr>
-              <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" class="pointer" v-b-modal.update-coin-modal>
+              <tr v-show="showNoResults">
+                <td colspan="5" class="text-center">
+                  <em>No coins match your search</em>
+                </td>
+              </tr>
+              <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-if="coin.displayed" class="pointer" v-b-modal.update-coin-modal>
                 <td>{{ coin.rank }}</td>
                 <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
                 <td class="text-right">{{ coin.price_usd | currency }}</td>
@@ -204,7 +214,9 @@
         sortOptions: sortOptions,
         sortSelected: sortOptions[0],
         sortByAttr: 'name',
-        sortByDir: 'asc'
+        sortByDir: 'asc',
+        searchString: '',
+        showNoResults: false
       }
     },
 
@@ -296,7 +308,8 @@
                 rank: parseInt(thisCoinData.rank),
                 quantity: parseFloat(thisCoin.quantity),
                 value_usd: thisCoin.quantity * thisCoinData.price_usd,
-                value_btc: thisCoin.quantity * thisCoinData.price_btc
+                value_btc: thisCoin.quantity * thisCoinData.price_btc,
+                displayed: true
               }
 
               totalUSD += thisCoinData.price_usd ? thisCoin.quantity * thisCoinData.price_usd : 0
@@ -347,6 +360,27 @@
             return a[app.sortByAttr] > b[app.sortByAttr]
           }
         })
+      },
+      searchCoins: function () {
+        let app = this
+        let searchString = this.searchString.toLowerCase()
+        let numResults = 0
+
+        app.portfolioData.forEach(function (coin) {
+          let coinName = coin.name.toLowerCase()
+          let coinSymbol = coin.symbol.toLowerCase()
+          if (!searchString || !searchString.length) {
+            coin.displayed = true
+          } else if (coinName.indexOf(searchString) > -1 || coinSymbol.indexOf(searchString) > -1) {
+            coin.displayed = true
+          } else {
+            coin.displayed = false
+          }
+
+          numResults += coin.displayed ? 1 : 0
+        })
+
+        app.showNoResults = numResults === 0
       }
     },
 
