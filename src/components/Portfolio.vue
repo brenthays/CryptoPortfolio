@@ -355,9 +355,9 @@
 
         this.portfolioData.sort(function (a, b) {
           if (app.sortByDir === 'desc') {
-            return a[app.sortByAttr] < b[app.sortByAttr]
+            return a[app.sortByAttr] < b[app.sortByAttr] ? 1 : -1
           } else {
-            return a[app.sortByAttr] > b[app.sortByAttr]
+            return a[app.sortByAttr] > b[app.sortByAttr] ? 1 : -1
           }
         })
       },
