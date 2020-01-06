@@ -1,7 +1,11 @@
 <template>
 
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Simple Crypto Portfolio</a>
+  <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <a class="navbar-brand" href="/">
+      <i class="fa fa-bitcoin mr-1"></i>
+      <i class="fa fa-arrow-right mr-1"></i>
+      <i class="fa fa-usd"></i>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

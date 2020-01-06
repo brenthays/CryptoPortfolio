@@ -3,7 +3,7 @@
     <div class="col-12">
       <div class="jumbotron text-center">
         <div>
-          <h2>Track Your Cryptocurrency in Real Time</h2>
+          <h2>Simple Crypto Portfolio</h2>
           <div class="row highlight">
             <div class="col-xs-12 col-md-2">
 

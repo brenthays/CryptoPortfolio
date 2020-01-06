@@ -32,7 +32,7 @@
   }
 </script>
 <style>
-  @import './assets/styles/theme1.css';
+  @import './assets/styles/theme2.css';
   @import './assets/styles/toastr.css';
   @import './assets/styles/main.css';
 
