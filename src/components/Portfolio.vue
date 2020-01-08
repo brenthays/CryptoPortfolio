@@ -60,7 +60,15 @@
         <!-- Jumbotron -->
         <div class="jumbotron text-center" v-if="totalPortfolioWorthUSD">
           <h3>Total Portfolio Value</h3>
-          <h2>{{ totalPortfolioWorthUSD | currency }}</h2>
+          <h2 v-if="totalPortfolioWorthUSD >= 1">
+            {{ totalPortfolioWorthUSD | currency }}
+          </h2>
+          <h2 v-if="totalPortfolioWorthUSD < 1">
+            {{ totalPortfolioWorthUSD | currency(
+              configSymbol, configSeparator, 4,
+              configFractionSeparator, configSymbolPosition, configSymbolSpacing
+            )}}
+          </h2>
         </div>
         <!-- Toolbar -->
         <div class="toolbar" v-show="portfolioData.length > 0">
@@ -127,7 +135,15 @@
               <tr v-for="coin in portfolioData" v-on:click="setUpdateCoin(coin)" v-if="coin.displayed" class="pointer" v-b-modal.update-coin-modal>
                 <td>{{ coin.rank }}</td>
                 <td><strong>{{ coin.symbol }}</strong> - {{ coin.name }}</td>
-                <td class="text-right">{{ coin.price_usd | currency }}</td>
+                <td class="text-right">
+                  <span v-if="coin.price_usd >= 1">{{ coin.price_usd | currency }}</span>
+                  <span v-if="coin.price_usd < 1">
+                    {{ coin.price_usd | currency(
+                      configSymbol, configSeparator, 4,
+                      configFractionSeparator, configSymbolPosition, configSymbolSpacing
+                    )}}
+                  </span>
+                </td>
                 <td class="text-right">
                   {{ coin.quantity }}
                 </td>
