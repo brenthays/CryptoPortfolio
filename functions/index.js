@@ -1,7 +1,7 @@
-const functions = require('firebase-functions')
-
-const admin = require('firebase-admin')
-admin.initializeApp(functions.config().firebase)
+// const functions = require('firebase-functions')
+//
+// const admin = require('firebase-admin')
+// admin.initializeApp(functions.config().firebase)
 
 // exports.refreshData = functions.https.onRequest((request, response) => {
 //   $http.get('https://api.coinmarketcap.com/v1/ticker/?limit=0')

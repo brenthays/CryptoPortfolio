@@ -34,7 +34,6 @@
             </b-btn>
           </div>
         </b-modal>
-
         <!-- update a coin modal -->
         <b-modal
         id="update-coin-modal"
@@ -58,21 +57,13 @@
             </b-btn>
           </div>
         </b-modal>
-
+        <!-- Jumbotron -->
         <div class="jumbotron text-center" v-if="totalPortfolioWorthUSD">
           <h3>Total Portfolio Value</h3>
           <h2>{{ totalPortfolioWorthUSD | currency }}</h2>
         </div>
-
+        <!-- Toolbar -->
         <div class="toolbar" v-show="portfolioData.length > 0">
-          <!-- <div class="input-group better-input-group sort-select pull-left" v-show="portfolioData.length > 1">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fa fa-sort"></i></span>
-            </div>
-            <select class="form-control" v-model="sortSelected" v-on:change="sortPortfolioData">
-              <option v-for="option in sortOptions" v-bind:value="option">{{ option.text }}</option>
-            </select>
-          </div> -->
           <div class="input-group better-input-group sort-select pull-left" v-show="portfolioData.length > 1">
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fa fa-search"></i></span>
@@ -87,12 +78,13 @@
           </button>
           <div class="clearfix"></div>
         </div>
+        <!-- Portfolio Table -->
         <div class="table-responsive">
           <table class="table table-bordered table-hover text-left">
             <thead class="thead-default" v-show="portfolioData.length > 0">
               <tr>
                 <th class="pointer" width="150px" v-on:click="sortPortfolioDataBy('rank')">
-                  Market Rank
+                  Rank
                   <i class="fa fa-caret-up" v-if="sortByDir == 'asc' && sortByAttr == 'rank'"></i>
                   <i class="fa fa-caret-down" v-if="sortByDir == 'desc' && sortByAttr == 'rank'"></i>
                 </th>
@@ -145,7 +137,6 @@
           </table>
         </div>
       </div>
-
     </div>
   </div>
 </template>
